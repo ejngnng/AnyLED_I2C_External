@@ -4,10 +4,19 @@
 
 #define DEBUG_ANYLED_I2C  0
 
+#define HAS_NAV           1
+
 #define ANYLED_I2C_ADDR 0x90
 #define NUM_LEDS    3
 
+#if HAS_NAV
+uint32_t nav_interval = 1000;
+uint32_t last_time = 0;
+
 CRGB nav_leds[NUM_LEDS];
+
+void nav_loop();
+#endif
 CRGB sync_leds[NUM_LEDS];
 
 typedef struct rgb_s{
@@ -20,12 +29,11 @@ rgb_t rgb;
 
 bool update = false;
 
-uint32_t nav_interval = 1000;
-uint32_t last_time = 0;
+
 
 void receiveEvent(int x);
 void led_loop();
-void nav_loop();
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -34,16 +42,26 @@ void setup() {
   Wire.begin(ANYLED_I2C_ADDR);
   Wire.onReceive(receiveEvent);
   memset(&rgb, 0, sizeof(rgb_t));
-  FastLED.addLeds<NEOPIXEL, 9>(nav_leds, NUM_LEDS);
-  FastLED.addLeds<NEOPIXEL, 8>(nav_leds, NUM_LEDS);
-  FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
-  FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
+  
+  #if HAS_NAV
+    FastLED.addLeds<NEOPIXEL, 9>(nav_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 8>(nav_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
+  #else
+    FastLED.addLeds<NEOPIXEL, 9>(sync_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 8>(sync_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
+  #endif
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   led_loop();
+  #if HAS_NAV
   nav_loop();
+  #endif
 }
 
 void receiveEvent(int x){
@@ -79,6 +97,7 @@ void led_loop(){
 
 }
 
+#if HAS_NAV
 void nav_loop(){
     uint32_t now = millis();
     if(now -last_time <= nav_interval){
@@ -95,3 +114,5 @@ void nav_loop(){
       last_time = now;
     }
 }
+
+#endif
