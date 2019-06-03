@@ -4,7 +4,7 @@
 
 #define DEBUG_ANYLED_I2C  0
 
-#define HAS_NAV           1
+#define HAS_NAV           0
 
 #define ANYLED_I2C_ADDR 0x90
 #define NUM_LEDS    3

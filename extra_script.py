@@ -7,4 +7,4 @@ defines = {k: v for (k, v) in my_flags.get("CPPDEFINES")}
 buildtime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
 
 #env.Replace(PROGNAME="firmware_%s" % buildtime)
-env.Replace(PROGNAME = "AnyLED_I2C_External_HasNav_%s" % defines.get("VERSION"))
+env.Replace(PROGNAME = "AnyLED_I2C_External_OnlySync_%s" % defines.get("VERSION"))
