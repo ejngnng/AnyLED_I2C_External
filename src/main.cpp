@@ -10,7 +10,7 @@
 #define NUM_LEDS    3
 
 #if HAS_NAV
-uint32_t nav_interval = 1000;
+uint32_t nav_interval = 800;
 uint32_t last_time = 0;
 
 CRGB nav_leds[NUM_LEDS];
@@ -32,6 +32,7 @@ bool update = false;
 
 
 void receiveEvent(int x);
+void led_setup();
 void led_loop();
 
 
@@ -54,6 +55,8 @@ void setup() {
     FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
     FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
   #endif
+
+  led_setup();
 }
 
 void loop() {
@@ -83,6 +86,23 @@ void receiveEvent(int x){
 #endif
 }
 
+void led_setup(){
+  for(uint8_t i=0; i<NUM_LEDS; i++){
+    #if HAS_NAV
+      nav_leds[i] = CRGB::Red;
+      sync_leds[i] = CRGB::Blue;
+      FastLED.show();
+      nav_leds[i] = CRGB::Black;
+      sync_leds[i] = CRGB::Black;
+      delay(20);
+    #else
+      sync_leds[i] = CRGB::Red;
+      FastLED.show();
+      sync_leds[i] = CRGB::Black;
+      delay(20);
+    #endif
+  }
+}
 
 void led_loop(){
   if(update){
