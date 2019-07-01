@@ -47,14 +47,14 @@ void setup() {
   #if HAS_NAV
     FastLED.addLeds<NEOPIXEL, 9>(nav_leds, NUM_LEDS);
     FastLED.addLeds<NEOPIXEL, 8>(nav_leds, NUM_LEDS);
-    FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
-    FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
   #else
     FastLED.addLeds<NEOPIXEL, 9>(sync_leds, NUM_LEDS);
     FastLED.addLeds<NEOPIXEL, 8>(sync_leds, NUM_LEDS);
+  #endif
     FastLED.addLeds<NEOPIXEL, 7>(sync_leds, NUM_LEDS);
     FastLED.addLeds<NEOPIXEL, 6>(sync_leds, NUM_LEDS);
-  #endif
+    FastLED.addLeds<NEOPIXEL, 5>(sync_leds, NUM_LEDS);
+    FastLED.addLeds<NEOPIXEL, 4>(sync_leds, NUM_LEDS);
 
   led_setup();
 }
@@ -87,21 +87,25 @@ void receiveEvent(int x){
 }
 
 void led_setup(){
-  for(uint8_t i=0; i<NUM_LEDS; i++){
-    #if HAS_NAV
-      nav_leds[i] = CRGB::Red;
-      sync_leds[i] = CRGB::Blue;
-      FastLED.show();
-      nav_leds[i] = CRGB::Black;
-      sync_leds[i] = CRGB::Black;
-      delay(20);
-    #else
-      sync_leds[i] = CRGB::Red;
-      FastLED.show();
-      sync_leds[i] = CRGB::Black;
-      delay(20);
-    #endif
+  uint8_t n = 10;
+    while(n--){
+    for(uint8_t i=0; i<NUM_LEDS; i++){
+      #if HAS_NAV
+        nav_leds[i] = CRGB::Red;
+        sync_leds[i] = CRGB::Blue;
+        FastLED.show();
+        nav_leds[i] = CRGB::Black;
+        sync_leds[i] = CRGB::Black;
+        delay(20);
+      #else
+        sync_leds[i] = CRGB::Cyan;
+        FastLED.show();
+        sync_leds[i] = CRGB::Black;
+        delay(100);
+      #endif
+    }
   }
+
 }
 
 void led_loop(){
